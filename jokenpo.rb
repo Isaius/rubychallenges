@@ -1,44 +1,43 @@
 class JokenpoObject
-  def defeat
-    :defeat
+  attr_accessor :wins_against, :loses_to
+
+  def draw?(opponent)
+    is_a?(opponent.class)
   end
 
-  def win
-    :win
+  def win(opponent)
+    opponent.is_a?(@wins_against)
   end
 
-  def draw
-    :draw
+  def vs(opponent)
+    return :nil if draw?(opponent)
+    return self if win(opponent)
+
+    opponent
   end
 end
 
 class Rock < JokenpoObject
-  def vs(opponent)
-    return defeat if opponent.is_a?(Paper)
-
-    return win if opponent.is_a?(Scissor)
-
-    return draw if opponent.is_a?(Rock)
+  def initialize
+    super()
+    @wins_against = Scissor
+    @loses_to = Paper
   end
 end
 
 class Paper < JokenpoObject
-  def vs(opponent)
-    return draw if opponent.is_a?(Paper)
-
-    return defeat if opponent.is_a?(Scissor)
-
-    return win if opponent.is_a?(Rock)
+  def initialize
+    super()
+    @wins_against = Rock
+    @loses_to = Scissor
   end
 end
 
 class Scissor < JokenpoObject
-  def vs(opponent)
-    return win if opponent.is_a?(Paper)
-
-    return draw if opponent.is_a?(Scissor)
-
-    return defeat if opponent.is_a?(Rock)
+  def initialize
+    super()
+    @wins_against = Paper
+    @loses_to = Rock
   end
 end
 
@@ -46,15 +45,11 @@ class Game
   attr_reader :winner
 
   def initialize(opponent_a, opponent_b)
-    @winner = case opponent_a.vs(opponent_b)
-              when :win
-                opponent_a
-              when :defeat
-                opponent_b
-              else
-                :nil
-              end
+    @winner = opponent_a.vs(opponent_b)
   end
 end
 
-puts Game.new(Rock.new, Paper.new).winner
+puts "Paper   Win: #{Game.new(Rock.new, Paper.new).winner}"
+puts "Scissor Win: #{Game.new(Scissor.new, Paper.new).winner}"
+puts "Rock    Win: #{Game.new(Scissor.new, Rock.new).winner}"
+puts "Draw:   #{Game.new(Rock.new, Rock.new).winner}"
