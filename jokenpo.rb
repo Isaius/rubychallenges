@@ -1,19 +1,20 @@
 class JokenpoObject
-  attr_accessor :wins_against, :loses_to
-
-  def draw?(opponent)
-    is_a?(opponent.class)
+  def draw?(defensor, opponent)
+    defensor.is_a?(opponent.class)
   end
 
-  def win(opponent)
-    opponent.is_a?(@wins_against)
+  def win(opponent, wins_against)
+    opponent.is_a?(wins_against)
   end
 
-  def vs(opponent)
-    return :nil if draw?(opponent)
-    return self if win(opponent)
+  def defeat(opponent, loses_to)
+    opponent.is_a?(loses_to)
+  end
 
-    opponent
+  def game(defensor, opponent, wins_against, loses_to)
+    return :nil if draw?(defensor, opponent)
+    return self if win(opponent, wins_against)
+    return opponent if defeat(opponent, loses_to)
   end
 end
 
@@ -23,6 +24,10 @@ class Rock < JokenpoObject
     @wins_against = Scissor
     @loses_to = Paper
   end
+
+  def vs(opponent)
+    game(self, opponent, @wins_against, @loses_to)
+  end
 end
 
 class Paper < JokenpoObject
@@ -31,6 +36,10 @@ class Paper < JokenpoObject
     @wins_against = Rock
     @loses_to = Scissor
   end
+
+  def vs(opponent)
+    game(self, opponent, @wins_against, @loses_to)
+  end
 end
 
 class Scissor < JokenpoObject
@@ -38,6 +47,10 @@ class Scissor < JokenpoObject
     super()
     @wins_against = Paper
     @loses_to = Rock
+  end
+
+  def vs(opponent)
+    game(self, opponent, @wins_against, @loses_to)
   end
 end
 
